@@ -12,25 +12,34 @@ document.getElementById('dropArea').addEventListener('dragleave', (event) => {
 document.getElementById('dropArea').addEventListener('drop', (event) => {
     event.stopPropagation();
     event.preventDefault();
+    document.getElementById('dropArea').classList.remove('drag-over');
 
     var files = event.dataTransfer.files;
     if (files.length > 0) {
         var file = files[0];
+
+        if (!isFileSizeValid(file)) {
+            alert('File size exceeds the 1GB limit.');
+            return;
+        }
+
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileInfo').style.display = 'block';
-
         uploadFile(file);
     }
-
-    document.getElementById('dropArea').classList.remove('drag-over');
 });
 
 document.getElementById('videoFile').addEventListener('change', function (event) {
     if (this.files.length > 0) {
         var file = this.files[0];
+
+        if (!isFileSizeValid(file)) {
+            alert('File size exceeds the 1GB limit.');
+            return;
+        }
+
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileInfo').style.display = 'block';
-
         uploadFile(file);
     }
 });
@@ -52,11 +61,6 @@ function getPresignedUrl(file) {
 }
 
 function uploadFile(file) {
-    if (!isFileSizeValid(file)) {
-        alert('File size exceeds the 1GB limit.');
-        return;
-    }
-
     getPresignedUrl(file).then(uploadUrl => {
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", updateProgress, false);
