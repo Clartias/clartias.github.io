@@ -56,7 +56,7 @@ function uploadVideo() {
         xhr.addEventListener("load", transferComplete, false);
 
         xhr.open("PUT", "https://wrcqcwfqbb.execute-api.us-east-1.amazonaws.com/uploads");
-        xhr.setRequestHeader("Content-Type", "application/octet-stream");
+        xhr.setRequestHeader("Content-Type", "image/jpeg");
         xhr.send(file);
     } else {
         alert('Please select or drop a file to upload.');
