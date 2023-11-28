@@ -9,28 +9,20 @@
     <header>
         <nav>
             <div class="logo-container">
-                <img src="logo.png" alt="BearCaptions" id="logo" width="300" />
+                <img src="bearcaptions.png" alt="BearCaptions" id="logo" width="300" />
             </div>
-            <!-- <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#blog">Blog</a></li>
-            </ul> -->
         </nav>
     </header>
 
     <main>
         <section id="upload">
             <div class="upload-container">
-                <!-- <h1>BearCaptions</h1> -->
                 <h2>&#x0001F9F8; &#x1F9E0; BearCaptions AI</h2>
                 <h2>Your Video/Audio Files to English Texts</h2>
                 <h3>Convert Any Language to English </h3>
                 <h3>Use Cases</h3>
                 <p>&#x1F9D1;&#x1F4DA; Text transcripts & summary for any video and audio file </p>
                 <p>&#11088; Automatically generate subtitles for videos, mp3 audio files</p>
-                <!-- <p>&#x1F9D1;&#x1F4DA; AI Summary for any video and audio file </p> -->
-
                 <p>Free for anything under 15 minutes. $9/month for unlimited conversion 
                     (limits are subject to change)</p>
                 <p>&#x2705; Upload Video/Audio. Enter email address. Click submit and receive results in 5 minutes.</p>
@@ -38,7 +30,6 @@
                 <form id="uploadForm">
                     <div id="dropArea" class="drop-area">
                         <p>Drag and drop your video/audio here or</p>
-                            <!-- Thumbnail or icon will be displayed here -->
                         <img id="thumbnail" style="display:none; max-width:100%; height:auto;" />
                         <div id="audioIcon" style="display:none;">🎵</div>
                         <div id="fileInfo" style="display: none;">
@@ -50,18 +41,17 @@
                         </label>
                         <input type="file" id="videoFile" accept="video/*" hidden>
                     </div>
+                    <div class="progress-bar-container">
+                        <progress id="uploadProgress" value="0" max="100"></progress>
+                    </div>
                     <div class="email-and-submit-container">
                         <input type="email" id="emailField" name="email" placeholder="Enter email address" required />
                         <button type="button" class="upload-btn" onclick="uploadVideo()">Submit!</button>
                     </div>
                     <p>need something custom to your needs? Contact me via this <a href="https://docs.google.com/forms/d/e/1FAIpQLSdptPQubXLJCj7j9qKTGugvLPE_09RWQMXnmTE4FaEW3m6zdQ/viewform?usp=sf_link">form</a></p>
-                    <!-- <p>check your spam if you have not received anything in 5 minutes</p> -->
                 </form>
             </div>
         </section>
-        
-        
-        <!-- Additional content sections here -->
     </main>
 
     <script src="script.js"></script>
