@@ -19,7 +19,6 @@ document.getElementById('dropArea').addEventListener('drop', (event) => {
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileInfo').style.display = 'block';
 
-        // Initiate upload
         uploadFile(file);
     }
 
@@ -32,7 +31,6 @@ document.getElementById('videoFile').addEventListener('change', function (event)
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileInfo').style.display = 'block';
 
-        // Initiate upload
         uploadFile(file);
     }
 });
@@ -42,6 +40,11 @@ document.getElementById('cancelButton').addEventListener('click', function () {
     document.getElementById('fileInfo').style.display = 'none';
 });
 
+function isFileSizeValid(file) {
+    const MAX_SIZE = 1024 * 1024 * 1024; // 1GB in bytes
+    return file.size <= MAX_SIZE;
+}
+
 function getPresignedUrl(file) {
     return fetch(`https://wrcqcwfqbb.execute-api.us-east-1.amazonaws.com/uploads?filename=${encodeURIComponent(file.name)}&filetype=${encodeURIComponent(file.type)}`)
         .then(response => response.json())
@@ -49,6 +52,11 @@ function getPresignedUrl(file) {
 }
 
 function uploadFile(file) {
+    if (!isFileSizeValid(file)) {
+        alert('File size exceeds the 1GB limit.');
+        return;
+    }
+
     getPresignedUrl(file).then(uploadUrl => {
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", updateProgress, false);
