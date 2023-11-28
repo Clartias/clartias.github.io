@@ -19,9 +19,7 @@ document.getElementById('dropArea').addEventListener('drop', (event) => {
         var file = files[0];
         document.getElementById('fileName').textContent = file.name;
         document.getElementById('fileInfo').style.display = 'block';
-
         storeFileClientSide(file);
-        simulateApiRequest(file);
     }
 
     document.getElementById('dropArea').classList.remove('drag-over');
@@ -40,22 +38,6 @@ document.getElementById('cancelButton').addEventListener('click', function() {
     document.getElementById('fileInfo').style.display = 'none';
 });
 
-function displayVideoThumbnail(file) {
-    var thumbnail = document.getElementById('thumbnail');
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        thumbnail.src = e.target.result;
-        thumbnail.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-    document.getElementById('audioIcon').style.display = 'none';
-}
-
-function displayAudioIcon() {
-    document.getElementById('thumbnail').style.display = 'none';
-    document.getElementById('audioIcon').style.display = 'block';
-}
-
 function storeFileClientSide(file) {
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -64,26 +46,31 @@ function storeFileClientSide(file) {
     reader.readAsDataURL(file);
 }
 
-function simulateApiRequest(file) {
-    var progressBar = document.getElementById('uploadProgress');
-    progressBar.value = 0;
-
-    var uploadInterval = setInterval(function() {
-        if (progressBar.value < 100) {
-            progressBar.value += 10;
-        } else {
-            clearInterval(uploadInterval);
-            alert('API request simulated: ' + file.name);
-        }
-    }, 200);
-}
-
 function uploadVideo() {
     var fileInput = document.getElementById('videoFile');
     if (fileInput.files.length > 0) {
         var file = fileInput.files[0];
-        alert('File ready for upload: ' + file.name);
+        var xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener("progress", updateProgress, false);
+        xhr.addEventListener("load", transferComplete, false);
+
+        xhr.open("PUT", "https://wrcqcwfqbb.execute-api.us-east-1.amazonaws.com/uploads");
+        xhr.setRequestHeader("Content-Type", "application/octet-stream");
+        xhr.send(file);
     } else {
         alert('Please select or drop a file to upload.');
     }
+}
+
+function updateProgress(e) {
+    if (e.lengthComputable) {
+        var percentComplete = e.loaded / e.total * 100;
+        var progressBar = document.getElementById('uploadProgress');
+        progressBar.value = percentComplete;
+    }
+}
+
+function transferComplete(e) {
+    alert("Upload complete.");
 }
