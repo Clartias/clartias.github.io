@@ -58,7 +58,7 @@ function resetForm() {
 }
 
 function isFileSizeValid(file) {
-    const MAX_SIZE = 1024 * 1024 * 1024; // 1GB in bytes
+    const MAX_SIZE = 4024 * 4024 * 4024; // 1GB in bytes
     return file.size <= MAX_SIZE;
 }
 
