@@ -1,4 +1,5 @@
 let selectedFile;
+let currentUploadingFile = null;
 
 document.getElementById('dropArea').addEventListener('dragover', (event) => {
     event.stopPropagation();
@@ -83,21 +84,38 @@ function getPresignedUrl(file, email) {
 }
 
 function uploadFile(file, email, callback) {
+    if (currentUploadingFile === file) {
+        alert('Upload already in progress for this file.');
+        return;
+    }
+
+    currentUploadingFile = file;
+
     getPresignedUrl(file, email).then(uploadUrl => {
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", updateProgress, false);
         xhr.addEventListener("load", function() {
             transferComplete();
+            currentUploadingFile = null; // Reset the flag on successful upload
             callback(); // Call the callback function to re-enable the button
         }, false);
-        xhr.addEventListener("error", callback); // Re-enable the button in case of error
-        xhr.addEventListener("abort", callback); // Re-enable the button if the transfer is cancelled
+
+        xhr.addEventListener("error", function() {
+            currentUploadingFile = null; // Reset the flag on error
+            callback(); // Re-enable the button in case of error
+        });
+
+        xhr.addEventListener("abort", function() {
+            currentUploadingFile = null; // Reset the flag if the transfer is cancelled
+            callback(); // Re-enable the button if the transfer is cancelled
+        });
 
         xhr.open("PUT", uploadUrl);
         xhr.setRequestHeader("Content-Type", file.type);
         xhr.send(file);
     }).catch(error => {
         console.error("Error getting a signed URL or uploading the file:", error);
+        currentUploadingFile = null; // Reset the flag in case of error during pre-signed URL fetch
         callback(); // Re-enable the button in case of error
     });
 }
