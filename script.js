@@ -30,8 +30,14 @@ document.getElementById('cancelButton').addEventListener('click', function () {
 
 document.getElementById('submitButton').addEventListener('click', function () {
     const email = document.getElementById('emailField').value;
+    const submitButton = document.getElementById('submitButton');
     if (email && selectedFile) {
-        uploadFile(selectedFile, email);
+        submitButton.disabled = true; // Disable the submit button
+        submitButton.textContent = 'Uploading...'; // Optional: change button text
+        uploadFile(selectedFile, email, function() {
+            submitButton.disabled = false; // Re-enable the button after the upload
+            submitButton.textContent = 'Submit!'; // Optional: reset button text
+        });
     } else {
         alert('Please select a file and enter your email address.');
     }
@@ -69,17 +75,23 @@ function getPresignedUrl(file, email) {
         .then(data => data.uploadURL);
 }
 
-function uploadFile(file, email) {
+function uploadFile(file, email, callback) {
     getPresignedUrl(file, email).then(uploadUrl => {
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", updateProgress, false);
-        xhr.addEventListener("load", transferComplete, false);
+        xhr.addEventListener("load", function() {
+            transferComplete();
+            callback(); // Call the callback function to re-enable the button
+        }, false);
+        xhr.addEventListener("error", callback); // Re-enable the button in case of error
+        xhr.addEventListener("abort", callback); // Re-enable the button if the transfer is cancelled
 
         xhr.open("PUT", uploadUrl);
         xhr.setRequestHeader("Content-Type", file.type);
         xhr.send(file);
     }).catch(error => {
         console.error("Error getting a signed URL or uploading the file:", error);
+        callback(); // Re-enable the button in case of error
     });
 }
 
