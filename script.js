@@ -45,6 +45,12 @@ document.getElementById('submitButton').addEventListener('click', function () {
 
 function handleFileSelection(files) {
     if (files.length > 0) {
+        // Check if the new file is different from the currently selected file
+        if (selectedFile && files[0].name === selectedFile.name && files[0].size === selectedFile.size) {
+            // It's the same file, so do nothing
+            return;
+        }
+
         selectedFile = files[0];
 
         if (!isFileSizeValid(selectedFile)) {
@@ -56,6 +62,7 @@ function handleFileSelection(files) {
         document.getElementById('fileInfo').style.display = 'block';
     }
 }
+
 
 function resetForm() {
     document.getElementById('videoFile').value = '';
