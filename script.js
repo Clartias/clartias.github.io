@@ -1,7 +1,7 @@
 let selectedFile;
-let currentUploadingFile = null;
 
 document.getElementById('dropArea').addEventListener('dragover', (event) => {
+    console.log("droparea-dragover function")
     event.stopPropagation();
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
@@ -9,10 +9,12 @@ document.getElementById('dropArea').addEventListener('dragover', (event) => {
 });
 
 document.getElementById('dropArea').addEventListener('dragleave', (event) => {
+    console.log("dragleave function")
     document.getElementById('dropArea').classList.remove('drag-over');
 });
 
 document.getElementById('dropArea').addEventListener('drop', (event) => {
+    console.log("droparea-drop function")
     event.stopPropagation();
     event.preventDefault();
     document.getElementById('dropArea').classList.remove('drag-over');
@@ -22,6 +24,7 @@ document.getElementById('dropArea').addEventListener('drop', (event) => {
 });
 
 document.getElementById('videoFile').addEventListener('change', function (event) {
+    console.log("videofile function")
     handleFileSelection(this.files);
 });
 
@@ -30,6 +33,7 @@ document.getElementById('cancelButton').addEventListener('click', function () {
 });
 
 document.getElementById('submitButton').addEventListener('click', function () {
+    console.log("submit button clicked")
     const email = document.getElementById('emailField').value;
     const submitButton = document.getElementById('submitButton');
     if (email && selectedFile) {
@@ -45,6 +49,7 @@ document.getElementById('submitButton').addEventListener('click', function () {
 });
 
 function handleFileSelection(files) {
+    console.log("handlefileselection function")
     if (files.length > 0) {
         // Check if the new file is different from the currently selected file
         if (selectedFile && files[0].name === selectedFile.name && files[0].size === selectedFile.size) {
@@ -77,6 +82,7 @@ function isFileSizeValid(file) {
 }
 
 function getPresignedUrl(file, email) {
+    console.log("presigned called")
     const filename = encodeURIComponent(email + '-' + file.name);
     return fetch(`https://wrcqcwfqbb.execute-api.us-east-1.amazonaws.com/uploads?filename=${filename}&filetype=${encodeURIComponent(file.type)}`)
         .then(response => response.json())
@@ -84,38 +90,25 @@ function getPresignedUrl(file, email) {
 }
 
 function uploadFile(file, email, callback) {
-    if (currentUploadingFile === file) {
-        alert('Upload already in progress for this file.');
-        return;
-    }
-
-    currentUploadingFile = file;
-
+    console.log("uploadFile called")
     getPresignedUrl(file, email).then(uploadUrl => {
+        console.log("in presigned url logic")
         var xhr = new XMLHttpRequest();
         xhr.upload.addEventListener("progress", updateProgress, false);
         xhr.addEventListener("load", function() {
+            console.log("load transfer callback function")
             transferComplete();
-            currentUploadingFile = null; // Reset the flag on successful upload
             callback(); // Call the callback function to re-enable the button
         }, false);
+        xhr.addEventListener("error", callback); // Re-enable the button in case of error
+        xhr.addEventListener("abort", callback); // Re-enable the button if the transfer is cancelled
 
-        xhr.addEventListener("error", function() {
-            currentUploadingFile = null; // Reset the flag on error
-            callback(); // Re-enable the button in case of error
-        });
-
-        xhr.addEventListener("abort", function() {
-            currentUploadingFile = null; // Reset the flag if the transfer is cancelled
-            callback(); // Re-enable the button if the transfer is cancelled
-        });
-
+        console.log("this is the uploadURL" + uploadUrl);
         xhr.open("PUT", uploadUrl);
         xhr.setRequestHeader("Content-Type", file.type);
         xhr.send(file);
     }).catch(error => {
         console.error("Error getting a signed URL or uploading the file:", error);
-        currentUploadingFile = null; // Reset the flag in case of error during pre-signed URL fetch
         callback(); // Re-enable the button in case of error
     });
 }
