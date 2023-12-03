@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Robot, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -28,7 +28,7 @@ input[type="email"] {
 
 .logo-container {
     display: inline-block; /* Or float: left; depending on your layout */
-    margin-right: 20px; Adjust spacing as needed
+    margin-right: 20px;
 }
 
 
