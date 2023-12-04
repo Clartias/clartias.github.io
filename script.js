@@ -103,7 +103,6 @@ function uploadFile(file, email, callback) {
         xhr.addEventListener("error", callback); // Re-enable the button in case of error
         xhr.addEventListener("abort", callback); // Re-enable the button if the transfer is cancelled
 
-        console.log("this is the uploadURL" + uploadUrl);
         xhr.open("PUT", uploadUrl);
         xhr.setRequestHeader("Content-Type", file.type);
         xhr.send(file);
